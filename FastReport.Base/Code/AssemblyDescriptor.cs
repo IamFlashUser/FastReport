@@ -268,7 +268,7 @@ namespace FastReport.Code
                 string customCode = c.GetCustomScript();
                 
                 // avoid custom script duplicates
-                if (!String.IsNullOrEmpty(customCode) && processedCode.IndexOf(customCode) == -1)
+                if (!String.IsNullOrEmpty(customCode) && processedCode.IndexOf(customCode, StringComparison.Ordinal) == -1)
                 {
                     InsertItem(customCode, c.Name);
                     processedCode += customCode;

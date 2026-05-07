@@ -130,7 +130,7 @@ namespace FastReport.Data
             if(builder.Scheme == ConnectionStringScheme.MongoDBPlusSrv && builder.Server.Port != 27017)
             {
                 string portString = builder.Server.Port.ToString();
-                url = url.Remove(url.IndexOf(portString) - 1, 1).Replace(portString, "");
+                url = url.Remove(url.IndexOf(portString, StringComparison.Ordinal) - 1, 1).Replace(portString, "");
             }
             return url;
 #else
@@ -146,7 +146,7 @@ namespace FastReport.Data
             List<string> list = new List<string>();
 
             MongoClient client = new MongoClient(ConnectionString);
-            
+
             if (String.IsNullOrEmpty(dbName))
             {
                 var mongoUrl = new MongoUrl(ConnectionString);

@@ -231,7 +231,7 @@ namespace FastReport.Utils
                     if (i + 3 < s.Length && s[i + 1] == '#')
                     {
                         int j = i + 3;
-                        j = s.IndexOf(";", j, s.Length - j);
+                        j = s.IndexOf(';', j, s.Length - j);
                         if (j == -1)
                             throw new FormatException();
                         if (s[i + 2] == 'x')
@@ -334,7 +334,7 @@ namespace FastReport.Utils
         public static float StringToFloat(string value, string separator,/* string negativeSign,*/ bool removeNonDigit)
         {
             System.Text.StringBuilder result = new System.Text.StringBuilder();
-            int separatorPos = value.IndexOf(separator);
+            int separatorPos = value.IndexOf(separator, StringComparison.Ordinal);
             if (separatorPos == -1)
                 separatorPos = value.IndexOf('.');
             if (value.Contains(/*negativeSign*/"-"))

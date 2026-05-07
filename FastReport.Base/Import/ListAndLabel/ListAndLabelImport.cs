@@ -54,15 +54,15 @@ namespace FastReport.Import.ListAndLabel
 
         private string GetValueLL(string str)
         {
-            int index = textLL.IndexOf(str) + str.Length + 1;
-            int length = textLL.IndexOf("\r\n", index) - index;
+            int index = textLL.IndexOf(str, StringComparison.Ordinal) + str.Length + 1;
+            int length = textLL.IndexOf("\r\n", index, StringComparison.Ordinal) - index;
             return textLL.Substring(index, length);
         }
 
         private string GetValueLL(string str, int startIndex)
         {
-            int index = textLL.IndexOf(str, startIndex) + str.Length + 1;
-            int length = textLL.IndexOf("\r\n", index) - index;
+            int index = textLL.IndexOf(str, startIndex, StringComparison.Ordinal) + str.Length + 1;
+            int length = textLL.IndexOf("\r\n", index, StringComparison.Ordinal) - index;
             return textLL.Substring(index, length);
         }
 
@@ -73,8 +73,8 @@ namespace FastReport.Import.ListAndLabel
 
         private void LoadReportInfo()
         {
-            int index = textLL.IndexOf("Text=", textLL.IndexOf("[Description]")) + 5;
-            int length = textLL.IndexOf("\r\n", index) - index;
+            int index = textLL.IndexOf("Text=", textLL.IndexOf("[Description]", StringComparison.Ordinal), StringComparison.Ordinal) + 5;
+            int length = textLL.IndexOf("\r\n", index, StringComparison.Ordinal) - index;
             Report.ReportInfo.Description = textLL.Substring(index, length);
         }
 
@@ -134,15 +134,15 @@ namespace FastReport.Import.ListAndLabel
         private List<int> GetAllObjectsLL()
         {
             List<int> list = new List<int>();
-            int firstIndex = textLL.IndexOf("[Object]");
-            int lastIndex = textLL.LastIndexOf("[Object]");
+            int firstIndex = textLL.IndexOf("[Object]", StringComparison.Ordinal);
+            int lastIndex = textLL.LastIndexOf("[Object]", StringComparison.Ordinal);
             int currentIndex = firstIndex;
             if (currentIndex >= 0)
             {
                 do
                 {
                     list.Add(currentIndex);
-                    currentIndex = textLL.IndexOf("[Object]", currentIndex + 1);
+                    currentIndex = textLL.IndexOf("[Object]", currentIndex + 1, StringComparison.Ordinal);
                 }
                 while (currentIndex < lastIndex);
             }
@@ -176,7 +176,7 @@ namespace FastReport.Import.ListAndLabel
 
         private Font LoadFont(int startIndex)
         {
-            int index = textLL.IndexOf("[Font]", startIndex);
+            int index = textLL.IndexOf("[Font]", startIndex, StringComparison.Ordinal);
             //if (!UnitsConverter.ConvertBool(GetValueLL("Default", index)))
             //{
             string fontFamily = RemoveQuotes(GetValueLL("FaceName", index));
@@ -239,12 +239,12 @@ namespace FastReport.Import.ListAndLabel
         private void LoadTextObject(int startIndex, TextObject textObj)
         {
             // It can be an object without font and text. In list and labels it looks like a gray background
-            if (textLL.IndexOf("[Font]", startIndex) == -1)
+            if (textLL.IndexOf("[Font]", startIndex, StringComparison.Ordinal) == -1)
                 return;
             LoadComponent(startIndex, textObj);
             textObj.Font = LoadFont(startIndex);
             textObj.TextColor = defaultTextColor;
-            int fontIndex = textLL.IndexOf("[Font]", startIndex);
+            int fontIndex = textLL.IndexOf("[Font]", startIndex, StringComparison.Ordinal);
             if (GetValueLL("Color", fontIndex) != "Null()")
             {
                 textObj.TextColor = Color.FromName(GetValueLL("Color=LL.Color", fontIndex));
@@ -261,7 +261,7 @@ namespace FastReport.Import.ListAndLabel
         private void LoadLineObject(int startIndex, LineObject lineObj)
         {
             LoadComponent(startIndex, lineObj);
-            int colorIndex = textLL.IndexOf("FgColor", startIndex);
+            int colorIndex = textLL.IndexOf("FgColor", startIndex, StringComparison.Ordinal);
             if (colorIndex >= 0)
             {
                 lineObj.Border.Color = Color.FromName(GetValueLL("FgColor=LL.Color", colorIndex));
@@ -278,7 +278,7 @@ namespace FastReport.Import.ListAndLabel
         private void LoadShapeObject(int startIndex, ShapeObject shapeObj)
         {
             LoadComponent(startIndex, shapeObj);
-            int colorIndex = textLL.IndexOf("FgColor", startIndex);
+            int colorIndex = textLL.IndexOf("FgColor", startIndex, StringComparison.Ordinal);
             if (colorIndex >= 0)
             {
                 shapeObj.Border.Color = GetColorForShapeObject("FgColor", colorIndex);//Color.FromName(GetValueLL("FgColor=LL.Color", colorIndex));
@@ -390,7 +390,7 @@ namespace FastReport.Import.ListAndLabel
 
         private bool CheckIsListAndLabelReport()
         {
-            if (!String.IsNullOrEmpty(textLL) && textLL.IndexOf("[Description]") != -1)
+            if (!String.IsNullOrEmpty(textLL) && textLL.IndexOf("[Description]", StringComparison.Ordinal) != -1)
             {
                 return true;
             }

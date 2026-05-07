@@ -228,8 +228,8 @@ namespace FastReport.Web.Services
                                     string text = reader.ReadToEnd();
                                     if (!String.IsNullOrEmpty(text))
                                     {
-                                        int startExceptionText = text.IndexOf("<!--");
-                                        int endExceptionText = text.LastIndexOf("-->");
+                                        int startExceptionText = text.IndexOf("<!--", StringComparison.Ordinal);
+                                        int endExceptionText = text.LastIndexOf("-->", StringComparison.Ordinal);
                                         if (startExceptionText != -1)
                                             text = text.Substring(startExceptionText + 6, endExceptionText - startExceptionText - 6);
 
@@ -318,7 +318,7 @@ namespace FastReport.Web.Services
             static string GetBaseReport(string reportXml, WebReport webReport)
             {
                 const string BASE_REPORT_PROP_NAME = nameof(Report.BaseReport);
-                var startSymbol = reportXml.IndexOf(BASE_REPORT_PROP_NAME);
+                var startSymbol = reportXml.IndexOf(BASE_REPORT_PROP_NAME, StringComparison.Ordinal);
                 if (startSymbol == -1)
                     return string.Empty;
 

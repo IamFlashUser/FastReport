@@ -275,7 +275,7 @@ namespace FastReport
                 Parameter param = report.GetParameter(ReportParameter);
                 if (param != null)
                 {
-                    if (Value.IndexOf(ValuesSeparator) != -1)
+                    if (Value.IndexOf(ValuesSeparator, StringComparison.Ordinal) != -1)
                     {
                         string[] values = Value.Split(new string[] { ValuesSeparator }, StringSplitOptions.RemoveEmptyEntries);
                         for (int i = 0; i < values.Length; i++)

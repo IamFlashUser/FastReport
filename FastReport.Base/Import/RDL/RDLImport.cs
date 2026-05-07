@@ -546,12 +546,12 @@ namespace FastReport.Import.RDL
             string frExpression = "[";
             if (!string.IsNullOrEmpty(rdlValue) && rdlValue[0] == '=') //is expression
             {
-                if (rdlValue.IndexOf("Fields") == 1) //is sumple data source
+                if (rdlValue.IndexOf("Fields", StringComparison.Ordinal) == 1) //is sumple data source
                 {
                     frExpression += dataSetName + ".";
 
-                    int fieldStart = rdlValue.IndexOf("!") + 1;
-                    int fieldEnd = rdlValue.Substring(fieldStart).IndexOf(".") - 1;
+                    int fieldStart = rdlValue.IndexOf('!') + 1;
+                    int fieldEnd = rdlValue.Substring(fieldStart).IndexOf('.') - 1;
                     frExpression += rdlValue.Substring(fieldStart, fieldEnd + 1);
                     frExpression += "]";
                     return frExpression;

@@ -95,7 +95,7 @@ End Namespace
 
         public override int GetPositionToInsertOwnItems(string scriptText)
         {
-            int pos = scriptText.IndexOf("Public Class ReportScript");
+            int pos = scriptText.IndexOf("Public Class ReportScript", StringComparison.Ordinal);
             if (pos == -1)
                 return -1;
             return scriptText.IndexOf('\n', pos) + 1;
@@ -213,7 +213,7 @@ End Namespace
         {
             // replace the first occurence of "ReportScript"
             string replace = "Class ReportScript";
-            int index = scriptText.IndexOf(replace);
+            int index = scriptText.IndexOf(replace, StringComparison.Ordinal);
             scriptText = scriptText.Remove(index, replace.Length);
             scriptText = scriptText.Insert(index, "Class " + className + "\r\n    Inherits Report");
             // replace other items

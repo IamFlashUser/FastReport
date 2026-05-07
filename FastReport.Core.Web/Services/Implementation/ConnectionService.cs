@@ -166,60 +166,63 @@ namespace FastReport.Web.Services
             if (!IsConnectionStringValid(connectionString, out var errorMsg))
                 throw new Exception(errorMsg);
 
-            try
+            using (Report rep = new Report())
             {
-                using var conn = CreateConnection(connectionType);
-
-                conn.ConnectionString = connectionString;
-
-                if (_designerOptions.AllowCustomSqlQueries)
+                try
                 {
-                    foreach (var view in customViews)
+                    using var conn = CreateConnection(connectionType);
+                    rep.Dictionary.Connections.Add(conn);
+                    conn.ConnectionString = connectionString;
+
+                    if (_designerOptions.AllowCustomSqlQueries)
                     {
-                        var source = new TableDataSource
+                        foreach (var view in customViews)
                         {
-                            Table = new DataTable(),
-                            TableName = view.TableName,
-                            Name = view.TableName,
-                            SelectCommand = view.SqlQuery
-                        };
-
-                        conn.Tables.Add(source);
-                        conn.DataSet.Tables.Add(source.Table);
-                    }
-                }
-
-                conn.CreateAllTables(true);
-                if (conn.CanContainProcedures)
-                    conn.CreateAllProcedures();
-
-                foreach (TableDataSource c in conn.Tables)
-                {
-                    if(c is ProcedureDataSource proc)
-                    {
-                        bool needFillShema = true;
-                        foreach (CommandParameter p in proc.Parameters)
-                        {
-                            if (p.Direction != ParameterDirection.Output)
-                                needFillShema = false;
-                        }
-                        if (needFillShema)
-                        {
-                            try
+                            var source = new TableDataSource
                             {
-                                proc.InitSchema();
-                            }
-                            catch { }
+                                Table = new DataTable(),
+                                TableName = view.TableName,
+                                Name = view.TableName,
+                                SelectCommand = view.SqlQuery
+                            };
+
+                            conn.Tables.Add(source);
+                            conn.DataSet.Tables.Add(source.Table);
                         }
                     }
-                    c.Enabled = true;
-                }
 
-                return SerializeToString(conn);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error in creating tables. Please verify your connection string.");
+                    conn.CreateAllTables(true);
+                    if (conn.CanContainProcedures)
+                        conn.CreateAllProcedures();
+
+                    foreach (TableDataSource c in conn.Tables)
+                    {
+                        if (c is ProcedureDataSource proc)
+                        {
+                            bool needFillShema = true;
+                            foreach (CommandParameter p in proc.Parameters)
+                            {
+                                if (p.Direction != ParameterDirection.Output)
+                                    needFillShema = false;
+                            }
+                            if (needFillShema)
+                            {
+                                try
+                                {
+                                    proc.InitSchema();
+                                }
+                                catch { }
+                            }
+                        }
+                        c.Enabled = true;
+                    }
+
+                    return SerializeToString(conn);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error in creating tables. Please verify your connection string.");
+                }
             }
         }
 
@@ -333,47 +336,51 @@ namespace FastReport.Web.Services
         {
             if (!IsConnectionStringValid(connectionString, out var errorMsg))
                 throw new ArgumentException(errorMsg);
-
-            try
+            using (Report rep = new Report())
             {
-                using var conn = CreateConnection(connectionType);
-                conn.ConnectionString = connectionString;
-                conn.CreateAllTables(false);
-                if (conn.CanContainProcedures)
-                    conn.CreateAllProcedures();
-
-                var dataSource = conn.Tables.Cast<TableDataSource>()
-                                     .FirstOrDefault(table => string.Equals(table.Name, parameters.TableName));
-
-                // to get the schema of a custom sql query
-                if (dataSource == null && !string.IsNullOrEmpty(parameters.TableName) && !string.IsNullOrEmpty(parameters.SqlQuery))
+                try
                 {
-                    dataSource = new TableDataSource()
+                    using var conn = CreateConnection(connectionType);
+                    conn.ConnectionString = connectionString;
+                    rep.Dictionary.Connections.Add(conn);
+                    rep.Dictionary.Merge(webReport.Report.Dictionary);
+                    conn.CreateAllTables(false);
+                    if (conn.CanContainProcedures)
+                        conn.CreateAllProcedures();
+
+                    var dataSource = conn.Tables.Cast<TableDataSource>()
+                                         .FirstOrDefault(table => string.Equals(table.Name, parameters.TableName));
+
+                    // to get the schema of a custom sql query
+                    if (dataSource == null && !string.IsNullOrEmpty(parameters.TableName) && !string.IsNullOrEmpty(parameters.SqlQuery))
                     {
-                        Enabled = true,
-                        Name = parameters.TableName,
-                        Connection = conn,
-                    };
+                        dataSource = new TableDataSource()
+                        {
+                            Enabled = true,
+                            Name = parameters.TableName,
+                            Connection = conn,
+                        };
+                    }
+                    else if (dataSource == null)
+                        throw new Exception("Table not found");
+
+                    if (HasDuplicateParamName(parameters.Parameters))
+                        throw new Exception("Duplicate parameters");
+
+                    foreach (var parameter in parameters.Parameters)
+                    {
+                        ApplyParameterToDataSource(dataSource, parameter, webReport);
+                    }
+
+                    dataSource.SelectCommand = parameters.SqlQuery;
+                    dataSource.RefreshTable();
+
+                    return SerializeToString(dataSource);
                 }
-                else if(dataSource == null)
-                    throw new Exception("Table not found");
-
-                if (HasDuplicateParamName(parameters.Parameters))
-                    throw new Exception("Duplicate parameters");
-
-                foreach (var parameter in parameters.Parameters)
+                catch (Exception ex)
                 {
-                    ApplyParameterToDataSource(dataSource, parameter, webReport);
+                    throw new Exception($"Error updating table in the database. {(webReport.Debug ? $"InnerException: {ex.Message}" : "")}", ex);
                 }
-
-                dataSource.SelectCommand = parameters.SqlQuery;
-                dataSource.RefreshTable();
-
-                return SerializeToString(dataSource);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error updating table in the database. {(webReport.Debug ? $"InnerException: {ex.Message}" : "")}", ex);
             }
         }
 

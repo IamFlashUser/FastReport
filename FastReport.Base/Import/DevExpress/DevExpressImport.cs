@@ -79,9 +79,9 @@ namespace FastReport.Import.DevExpress
 
         private void LoadReportCode()
         {
-            if (devText.IndexOf("namespace") >= 0)
+            if (devText.IndexOf("namespace", StringComparison.Ordinal) >= 0)
             {
-                devText = devText.Remove(0, devText.IndexOf("namespace")).Replace(@"http://", "       ");
+                devText = devText.Remove(0, devText.IndexOf("namespace", StringComparison.Ordinal)).Replace(@"http://", "       ");
             }
             LoadReport();
             page = null;
@@ -90,11 +90,11 @@ namespace FastReport.Import.DevExpress
         private string FindObjectName(string mask)
         {
             string name = "";
-            int start = devText.IndexOf(mask);
+            int start = devText.IndexOf(mask, StringComparison.Ordinal);
             if (start > -1)
             {
                 start += mask.Length;
-                int length = devText.IndexOf(";", start) - start;
+                int length = devText.IndexOf(';', start) - start;
                 name = devText.Substring(start, length).Trim();
             }
             return name;
@@ -103,11 +103,11 @@ namespace FastReport.Import.DevExpress
         private void LoadOutsideBandsNames()
         {
             string bandsRagneStart = "this.Bands.AddRange(new DevExpress.XtraReports.UI.Band[]";
-            int start = devText.IndexOf(bandsRagneStart);
+            int start = devText.IndexOf(bandsRagneStart, StringComparison.Ordinal);
             if (start > -1)
             {
                 start += bandsRagneStart.Length;
-                int lenght = devText.IndexOf(";", start) - start;
+                int lenght = devText.IndexOf(';', start) - start;
                 string bandsEnumeration = devText.Substring(start, lenght).Replace("{", "").Replace("}", "").Replace(")", "").Replace("\n", "").Replace("\r", "").Trim();
                 string[] outBands = bandsEnumeration.Split(',');
                 outsideBands.Clear();
@@ -127,17 +127,17 @@ namespace FastReport.Import.DevExpress
         private string FindReportOutsideBandName(string mask)
         {
             string name = "";
-            int start = devText.IndexOf(mask);
+            int start = devText.IndexOf(mask, StringComparison.Ordinal);
             while (start != -1)
             {
                 if (start == -1)
                     return string.Empty;
                 start += mask.Length;
-                int length = devText.IndexOf(";", start) - start;
+                int length = devText.IndexOf(';', start) - start;
                 name = devText.Substring(start, length).Trim();
                 if (outsideBands.Contains(name))
                     return name;
-                start = devText.IndexOf(mask, start + mask.Length);
+                start = devText.IndexOf(mask, start + mask.Length, StringComparison.Ordinal);
             }
             return string.Empty;
         }
@@ -148,15 +148,15 @@ namespace FastReport.Import.DevExpress
             int start = 0;
             while (start > -1)
             {
-                start = devText.IndexOf(@"// " + name, start);
+                start = devText.IndexOf(@"// " + name, start, StringComparison.Ordinal);
                 if (devText.Substring(start, name.Length + 2 + 3).EndsWith("\r\n"))
                     break;
                 start += 1;
             }
             if (start > -1)
             {
-                start = devText.IndexOf(@"//", start + 2);
-                int length = devText.IndexOf(@"//", start + 2) - start + 2;
+                start = devText.IndexOf(@"//", start + 2, StringComparison.Ordinal);
+                int length = devText.IndexOf(@"//", start + 2, StringComparison.Ordinal) - start + 2;
                 description = devText.Substring(start, length);
             }
             return description;
@@ -165,11 +165,11 @@ namespace FastReport.Import.DevExpress
         private string GetPropertyValue(string name, string description)
         {
             string value = "";
-            int start = description.IndexOf("." + name + " ");
+            int start = description.IndexOf("." + name + " ", StringComparison.Ordinal);
             if (start > -1)
             {
                 start += name.Length + 3;
-                int length = description.IndexOf(";", start) - start;
+                int length = description.IndexOf(';', start) - start;
                 value = description.Substring(start, length).Trim();
             }
             return value;
@@ -177,7 +177,7 @@ namespace FastReport.Import.DevExpress
 
         private bool ExistValue(string name, string description)
         {
-            int start = description.IndexOf("." + name + " ");
+            int start = description.IndexOf("." + name + " ", StringComparison.Ordinal);
             return start > 0;
         }
 
@@ -186,7 +186,7 @@ namespace FastReport.Import.DevExpress
             string level = "level = ";
             if (description == null)
                 return -1;
-            int start = description.ToLower().IndexOf(level);
+            int start = description.ToLower().IndexOf(level, StringComparison.Ordinal);
             if (start > -1)
             {
                 string value = description.Substring(start + level.Length, 1);
@@ -217,21 +217,21 @@ namespace FastReport.Import.DevExpress
         private List<string> GetObjectNames(string description)
         {
             List<string> names = new List<string>();
-            int start = description.IndexOf(BAND_CHILD_DEFINITION);
+            int start = description.IndexOf(BAND_CHILD_DEFINITION, StringComparison.Ordinal);
             if (start > -1)
             {
                 start += BAND_CHILD_DEFINITION.Length;
-                int end = description.IndexOf("});", start);
+                int end = description.IndexOf("});", start, StringComparison.Ordinal);
                 string namesStr = description.Substring(start, end - start + 1).Replace("}", ",");
                 int pos = 0;
                 while (pos < end)
                 {
-                    pos = namesStr.IndexOf("this.", pos);
+                    pos = namesStr.IndexOf("this.", pos, StringComparison.Ordinal);
                     if (pos < 0)
                     {
                         break;
                     }
-                    names.Add(namesStr.Substring(pos + 5, namesStr.IndexOf(",", pos) - pos - 5));
+                    names.Add(namesStr.Substring(pos + 5, namesStr.IndexOf(',', pos) - pos - 5));
                     pos += 5;
                 }
             }
@@ -241,21 +241,21 @@ namespace FastReport.Import.DevExpress
         private List<string> GetBandsNames(string description)
         {
             List<string> names = new List<string>();
-            int start = description.IndexOf(BAND_CHILDBAND_DEFINITION);
+            int start = description.IndexOf(BAND_CHILDBAND_DEFINITION, StringComparison.Ordinal);
             if (start > -1)
             {
                 start += BAND_CHILDBAND_DEFINITION.Length;
-                int end = description.IndexOf("});", start);
+                int end = description.IndexOf("});", start, StringComparison.Ordinal);
                 string namesStr = description.Substring(start, end - start + 1).Replace("}", ",");
                 int pos = 0;
                 while (pos < end)
                 {
-                    pos = namesStr.IndexOf("this.", pos);
+                    pos = namesStr.IndexOf("this.", pos, StringComparison.Ordinal);
                     if (pos < 0)
                     {
                         break;
                     }
-                    names.Add(namesStr.Substring(pos + 5, namesStr.IndexOf(",", pos) - pos - 5));
+                    names.Add(namesStr.Substring(pos + 5, namesStr.IndexOf(',', pos) - pos - 5));
                     pos += 5;
                 }
             }
@@ -264,7 +264,7 @@ namespace FastReport.Import.DevExpress
 
         private bool IsTypeOfBand(string name, string bandType)
         {
-            int index = devText.IndexOf(name + " = new " + bandType);
+            int index = devText.IndexOf(name + " = new " + bandType, StringComparison.Ordinal);
             if (index > -1)
                 return true;
             return false;
@@ -273,10 +273,10 @@ namespace FastReport.Import.DevExpress
         private string GetBandType(string name)
         {
             string type = string.Empty;
-            int start = devText.IndexOf(name + " = new ");
+            int start = devText.IndexOf(name + " = new ", StringComparison.Ordinal);
             if (start > -1)
             {
-                int end = devText.IndexOf(";", start);
+                int end = devText.IndexOf(';', start);
                 start += name.Length + 7;
                 type = devText.Substring(start, end - start - 2);
             }
@@ -286,8 +286,8 @@ namespace FastReport.Import.DevExpress
         private string GetObjectType(string name)
         {
             string str = "this." + name + " = new ";
-            int start = devText.IndexOf(str) + str.Length;
-            int end = devText.IndexOf("();", start);
+            int start = devText.IndexOf(str, StringComparison.Ordinal) + str.Length;
+            int end = devText.IndexOf("();", start, StringComparison.Ordinal);
             return devText.Substring(start, end - start);
         }
 
@@ -297,9 +297,9 @@ namespace FastReport.Import.DevExpress
             string location = GetPropertyValue("LocationFloat", description);
             if (!String.IsNullOrEmpty(location))
             {
-                int start = location.IndexOf("(");
-                int comma = location.IndexOf(",", start);
-                int end = location.IndexOf(")");
+                int start = location.IndexOf('(');
+                int comma = location.IndexOf(',', start);
+                int end = location.IndexOf(')');
                 comp.Left = UnitsConverter.SizeFToPixels(location.Substring(start + 1, comma - start));
                 comp.Top = UnitsConverter.SizeFToPixels(location.Substring(comma + 2, end - comma - 1));
             }
@@ -310,19 +310,19 @@ namespace FastReport.Import.DevExpress
             string borders = GetPropertyValue("Borders", description);
             if (!String.IsNullOrEmpty(borders))
             {
-                if (borders.IndexOf("Left") > -1)
+                if (borders.IndexOf("Left", StringComparison.Ordinal) > -1)
                 {
                     border.Lines |= BorderLines.Left;
                 }
-                if (borders.IndexOf("Top") > -1)
+                if (borders.IndexOf("Top", StringComparison.Ordinal) > -1)
                 {
                     border.Lines |= BorderLines.Top;
                 }
-                if (borders.IndexOf("Right") > -1)
+                if (borders.IndexOf("Right", StringComparison.Ordinal) > -1)
                 {
                     border.Lines |= BorderLines.Right;
                 }
-                if (borders.IndexOf("Bottom") > -1)
+                if (borders.IndexOf("Bottom", StringComparison.Ordinal) > -1)
                 {
                     border.Lines |= BorderLines.Bottom;
                 }
@@ -349,9 +349,9 @@ namespace FastReport.Import.DevExpress
             string size = GetPropertyValue("SizeF", description);
             if (!String.IsNullOrEmpty(size))
             {
-                int start = size.IndexOf("(");
-                int comma = size.IndexOf(",", start);
-                int end = size.IndexOf(")");
+                int start = size.IndexOf('(');
+                int comma = size.IndexOf(',', start);
+                int end = size.IndexOf(')');
                 comp.Width = UnitsConverter.SizeFToPixels(size.Substring(start + 1, comma - start));
                 comp.Height = UnitsConverter.SizeFToPixels(size.Substring(comma + 2, end - comma - 1));
             }
@@ -362,9 +362,9 @@ namespace FastReport.Import.DevExpress
             string font = GetPropertyValue("Font", description);
             if (!String.IsNullOrEmpty(font))
             {
-                int start = font.IndexOf("(");
-                int comma = font.IndexOf(",", start);
-                int secondComma = font.IndexOf(",", comma + 1);
+                int start = font.IndexOf('(');
+                int comma = font.IndexOf(',', start);
+                int secondComma = font.IndexOf(',', comma + 1);
                 string fontFamily = font.Substring(start + 2, comma - start - 3);
                 float fontSize = 10.0f;
                 if (secondComma > -1)
@@ -392,8 +392,8 @@ namespace FastReport.Import.DevExpress
                 }
                 else
                 {
-                    string str = font.Substring(comma + 2, font.IndexOf(")") - comma - 2);
-                    fontSize = UnitsConverter.SizeFToPixelsFont(font.Substring(comma + 2, font.IndexOf(")") - comma - 2));
+                    string str = font.Substring(comma + 2, font.IndexOf(')') - comma - 2);
+                    fontSize = UnitsConverter.SizeFToPixelsFont(font.Substring(comma + 2, font.IndexOf(')') - comma - 2));
                 }
             }
             return new Font("Arial", 10.0f, FontStyle.Regular);
@@ -501,21 +501,21 @@ namespace FastReport.Import.DevExpress
         private List<string> GetChildNames(string childType, string description)
         {
             List<string> names = new List<string>();
-            int start = description.IndexOf(childType + "[]");
+            int start = description.IndexOf(childType + "[]", StringComparison.Ordinal);
             if (start > -1)
             {
                 start += childType.Length + 2;
-                int end = description.IndexOf("});", start);
+                int end = description.IndexOf("});", start, StringComparison.Ordinal);
                 string namesStr = description.Substring(start, end - start + 1).Replace("}", ",");
                 int pos = 0;
                 while (pos < end)
                 {
-                    pos = namesStr.IndexOf("this.", pos);
+                    pos = namesStr.IndexOf("this.", pos, StringComparison.Ordinal);
                     if (pos < 0)
                     {
                         break;
                     }
-                    names.Add(namesStr.Substring(pos + 5, namesStr.IndexOf(",", pos) - pos - 5));
+                    names.Add(namesStr.Substring(pos + 5, namesStr.IndexOf(',', pos) - pos - 5));
                     pos += 5;
                 }
             }
@@ -669,14 +669,14 @@ namespace FastReport.Import.DevExpress
         private List<string> GetStyleNames()
         {
             List<string> names = new List<string>();
-            int start = devText.IndexOf(DEV_EXPRESS_STYLE);
+            int start = devText.IndexOf(DEV_EXPRESS_STYLE, StringComparison.Ordinal);
             while (start > -1)
             {
                 start += DEV_EXPRESS_STYLE.Length;
-                int end = devText.IndexOf(";", start);
+                int end = devText.IndexOf(';', start);
                 names.Add(devText.Substring(start, end - start));
                 start = end;
-                start = devText.IndexOf(DEV_EXPRESS_STYLE, start);
+                start = devText.IndexOf(DEV_EXPRESS_STYLE, start, StringComparison.Ordinal);
             }
             return names;
         }
@@ -806,11 +806,11 @@ namespace FastReport.Import.DevExpress
             int start = 0;
             while (start != -1)
             {
-                start = devText.IndexOf(DETAIL_REPORT_BAND_MASK, start);
+                start = devText.IndexOf(DETAIL_REPORT_BAND_MASK, start, StringComparison.Ordinal);
                 if (start == -1)
                     return names;
                 start += DETAIL_REPORT_BAND_MASK.Length + 1;
-                int end = devText.IndexOf(";", start);
+                int end = devText.IndexOf(';', start);
                 string stringName = devText.Substring(start, end - start).Replace("}", ",");
                 if (!stringName.EndsWith(")"))
                     names.Add(devText.Substring(start, end - start).Replace("}", ","));

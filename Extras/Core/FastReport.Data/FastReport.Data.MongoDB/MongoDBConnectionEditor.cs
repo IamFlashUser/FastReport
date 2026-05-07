@@ -12,7 +12,11 @@ using FastReport.Forms;
 using MongoDB.Driver;
 using FastReport.Utils;
 using FastReport.Data;
+#if NET462
 using MongoDB.Driver.Core.Configuration;
+#else
+using MongoConfiguration = MongoDB.Driver.Core.Configuration;
+#endif
 
 namespace FastReport.Data
 {
@@ -33,7 +37,11 @@ namespace FastReport.Data
 
         private void comboBoxScheme_SelectedValueChanged(object sender, EventArgs e)
         {
+#if NET462
             if ((ConnectionStringScheme)comboBoxScheme.SelectedItem == ConnectionStringScheme.MongoDBPlusSrv)
+#else
+            if ((MongoConfiguration.ConnectionStringScheme)comboBoxScheme.SelectedItem == MongoConfiguration.ConnectionStringScheme.MongoDBPlusSrv)
+#endif
                 tbPort.Enabled = false;
             else tbPort.Enabled = true;
         }
@@ -58,7 +66,11 @@ namespace FastReport.Data
         protected override string GetConnectionString()
         {
             MongoUrlBuilder builder = new MongoUrlBuilder();
+#if NET462
             builder.Scheme = (ConnectionStringScheme)comboBoxScheme.SelectedItem;
+#else
+            builder.Scheme = (MongoConfiguration.ConnectionStringScheme)comboBoxScheme.SelectedItem;
+#endif
             if (!string.IsNullOrEmpty(FConnectionString))
                 builder = new MongoUrlBuilder(FConnectionString);
             builder.Server = new MongoServerAddress(tbHost.Text, int.Parse(tbPort.Text));
@@ -74,7 +86,7 @@ namespace FastReport.Data
             if(builder.Scheme == ConnectionStringScheme.MongoDBPlusSrv && builder.Server.Port != 27017)
             {
                 string portString = builder.Server.Port.ToString();
-                url = url.Remove(url.IndexOf(portString) - 1, 1).Replace(portString, "");
+                url = url.Remove(url.IndexOf(portString, StringComparison.Ordinal) - 1, 1).Replace(portString, "");
             }
             return url;
 #else
@@ -99,7 +111,11 @@ namespace FastReport.Data
         public MongoDBConnectionEditor()
         {
             InitializeComponent();
+#if NET462
             comboBoxScheme.DataSource = Enum.GetValues(typeof(ConnectionStringScheme));
+#else
+            comboBoxScheme.DataSource = Enum.GetValues(typeof(MongoConfiguration.ConnectionStringScheme));
+#endif
             Localize();
         }
     }

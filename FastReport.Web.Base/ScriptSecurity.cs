@@ -68,13 +68,13 @@ namespace FastReport.Web
             foreach(string reference in references)
             {
                 // in .Net Core need to add reference
-                if (reference.IndexOf("System.IO.FileSystem") != -1)
+                if (reference.IndexOf("System.IO.FileSystem", StringComparison.Ordinal) != -1)
                     return false;
 
-                if (reference.IndexOf("Microsoft.AspNetCore") != -1)
+                if (reference.IndexOf("Microsoft.AspNetCore", StringComparison.Ordinal) != -1)
                     return false;
 
-                if(reference.IndexOf("System.Net") != -1)
+                if(reference.IndexOf("System.Net", StringComparison.Ordinal) != -1)
                     return false;
             }
 
@@ -86,7 +86,7 @@ namespace FastReport.Web
 
             foreach (string pattern in Config.ScriptSecurityProps.StopList)
             {
-                if (reportScript.IndexOf(pattern) != -1)
+                if (reportScript.IndexOf(pattern, StringComparison.Ordinal) != -1)
                     return false;
             }
 

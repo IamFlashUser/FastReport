@@ -987,7 +987,7 @@ namespace FastReport
             CanBreak = false;
             ShiftMode = ShiftMode.Never;
             if (BaseName.EndsWith("Band"))
-                BaseName = ClassName.Remove(ClassName.IndexOf("Band"));
+                BaseName = ClassName.Remove(ClassName.IndexOf("Band", StringComparison.Ordinal));
             SetFlags(Flags.CanMove | Flags.CanChangeOrder | Flags.CanChangeParent | Flags.CanCopy | Flags.CanGroup, false);
             FlagUseStartNewPage = true;
             FlagCheckFreeSpace = true;

@@ -833,7 +833,7 @@ namespace FastReport.Data
 
             // prepare select command
             if (!(dataSource is ProcedureDataSource))
-                selectCommand = PrepareSelectCommand(selectCommand, table.TableName, conn);
+                selectCommand = PrepareSelectCommand(selectCommand, GetTableName(table), conn);
             try
             {
                 // read the table schema
@@ -894,7 +894,7 @@ namespace FastReport.Data
 
             // prepare select command
             if (!(dataSource is ProcedureDataSource))
-                selectCommand = PrepareSelectCommand(selectCommand, table.TableName, conn);
+                selectCommand = PrepareSelectCommand(selectCommand, GetTableName(table), conn);
 
             // read the table
             using (DbDataAdapter adapter = GetAdapter(selectCommand, conn, parameters))
@@ -1048,6 +1048,16 @@ namespace FastReport.Data
                 }
             }
             return null;
+        }
+
+        /// <summary>
+        /// Returns TableName of DataTable. Used to create the select command
+        /// </summary>
+        /// <param name="table"></param>
+        /// <returns></returns>
+        protected virtual string GetTableName(DataTable table)
+        {
+            return table.TableName;
         }
 
         /// <inheritdoc/>

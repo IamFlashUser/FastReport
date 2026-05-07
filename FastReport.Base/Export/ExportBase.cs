@@ -509,7 +509,7 @@ namespace FastReport.Export
                     file.Close();
                 File.Delete(file.Name);
             }
-            GC.Collect(2);
+            Config.GcCollect(2);
         }
 
         private void CurrentDomain_UnhandledException(object sender, EventArgs e)

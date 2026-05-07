@@ -28,7 +28,7 @@ namespace FastReport.Tests.OpenSource.Export.PdfSimple
 
             int i = 0;
             int index = 0;
-            while( (index = pdf.IndexOf("/Page ", index + 1)) != -1)
+            while( (index = pdf.IndexOf("/Page ", index + 1, StringComparison.Ordinal)) != -1)
             {
                 i++;
             }
@@ -37,7 +37,7 @@ namespace FastReport.Tests.OpenSource.Export.PdfSimple
             i = 0;
             index = 0;
 
-            while ((index = pdf.IndexOf("FEFF0046006100730074005200650070006F00720074002E004E00450054", index + 1)) != -1)
+            while ((index = pdf.IndexOf("FEFF0046006100730074005200650070006F00720074002E004E00450054", index + 1, StringComparison.Ordinal)) != -1)
             {
                 i++;
             }

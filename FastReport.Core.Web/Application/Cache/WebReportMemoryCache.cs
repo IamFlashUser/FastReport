@@ -42,7 +42,7 @@ namespace FastReport.Web.Cache
         {
             var webReport = value as WebReport;
             webReport.InternalDispose();
-            //GC.Collect();
+            //Config.GcCollect(2);
         }
 
         public bool Touch(string id)
