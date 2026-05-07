@@ -694,23 +694,23 @@ namespace FastReport.Import.StimulSoft
             BorderLines borderLines = BorderLines.None;
             if (!String.IsNullOrEmpty(sides))
             {
-                if (sides.IndexOf("Left") > -1)
+                if (sides.IndexOf("Left", StringComparison.Ordinal) > -1)
                 {
                     borderLines |= BorderLines.Left;
                 }
-                if (sides.IndexOf("Top") > -1)
+                if (sides.IndexOf("Top", StringComparison.Ordinal) > -1)
                 {
                     borderLines |= BorderLines.Top;
                 }
-                if (sides.IndexOf("Right") > -1)
+                if (sides.IndexOf("Right", StringComparison.Ordinal) > -1)
                 {
                     borderLines |= BorderLines.Right;
                 }
-                if (sides.IndexOf("Bottom") > -1)
+                if (sides.IndexOf("Bottom", StringComparison.Ordinal) > -1)
                 {
                     borderLines |= BorderLines.Bottom;
                 }
-                if (sides.IndexOf("All") > -1)
+                if (sides.IndexOf("All", StringComparison.Ordinal) > -1)
                 {
                     borderLines = BorderLines.All;
                 }

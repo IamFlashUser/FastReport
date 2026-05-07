@@ -121,7 +121,7 @@ namespace FastReport
 
         public override int GetPositionToInsertOwnItems(string scriptText)
         {
-            int pos = scriptText.IndexOf("public class ReportScript");
+            int pos = scriptText.IndexOf("public class ReportScript", StringComparison.Ordinal);
             if (pos == -1)
                 return -1;
             return scriptText.IndexOf('{', pos) + 3;

@@ -59,7 +59,7 @@ namespace FastReport.JsonClassGenerator
 
 
             JObject[] examples;
-            var example = Example.StartsWith("HTTP/") ? Example.Substring(Example.IndexOf("\r\n\r\n")) : Example;
+            var example = Example.StartsWith("HTTP/") ? Example.Substring(Example.IndexOf("\r\n\r\n", StringComparison.Ordinal)) : Example;
             using (var sr = new StringReader(example))
             using (var reader = new JsonTextReader(sr))
             {

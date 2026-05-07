@@ -330,7 +330,7 @@ namespace FastReport.Export
                 int ind1 = 0, ind2 = 0;
                 if (text.Contains(wingdings))
                 {
-                    ind1 = text.IndexOf(wingdings) + wingdings.Length;
+                    ind1 = text.IndexOf(wingdings, StringComparison.Ordinal) + wingdings.Length;
                     ind2 = text.IndexOf('<', ind1);
                     text = text.Substring(0, ind1) +
                         WingdingsToUnicodeConverter.Convert(text.Substring(ind1, ind2 - ind1)) +
@@ -338,7 +338,7 @@ namespace FastReport.Export
                 }
                 else if (text.Contains(webdings))
                 {
-                    ind1 = text.IndexOf(webdings) + webdings.Length;
+                    ind1 = text.IndexOf(webdings, StringComparison.Ordinal) + webdings.Length;
                     ind2 = text.IndexOf('<', ind1);
                     text = text.Substring(0, ind1) +
                         WingdingsToUnicodeConverter.Convert(text.Substring(ind1, ind2 - ind1)) +

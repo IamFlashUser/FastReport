@@ -260,6 +260,11 @@ namespace FastReport.Utils
             set { compilerSettings = value; }
         }
 
+        /// <summary>
+        /// Determines whether to run GC.Collect during long-running exports.
+        /// </summary>
+        public static bool UseGcCollect { get; set; } = true;
+
         #endregion Public Properties
 
         #region Public Methods
@@ -367,7 +372,7 @@ namespace FastReport.Utils
         {
             if (distinct)
             {
-                if (FLogs.IndexOf(s + "\r\n") != -1)
+                if (FLogs.IndexOf(s + "\r\n", StringComparison.Ordinal) != -1)
                     return;
             }
             FLogs += s + "\r\n";
@@ -403,6 +408,15 @@ namespace FastReport.Utils
             }
         }
 #endif
+
+
+        internal static void GcCollect(int generation)
+        {
+            if (UseGcCollect)
+            {
+                GC.Collect(generation);
+            }
+        }
 
         #endregion Internal Methods
 

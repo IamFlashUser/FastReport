@@ -28,7 +28,7 @@ namespace FastReport.Import.DevExpress
             float value = 0.0f;
             if (!String.IsNullOrEmpty(str))
             {
-                int end = str.IndexOf("F");
+                int end = str.IndexOf('F');
                 if (end > -1)
                 {
                     value = Convert.ToSingle(str.Substring(0, end), CultureInfo.InvariantCulture);
@@ -72,14 +72,14 @@ namespace FastReport.Import.DevExpress
         {
             if (!String.IsNullOrEmpty(str))
             {
-                if (str.IndexOf("FromArgb") > -1)
+                if (str.IndexOf("FromArgb", StringComparison.Ordinal) > -1)
                 {
-                    int start = str.IndexOf("byte") + 6;
-                    int red = Convert.ToInt32(str.Substring(start, str.IndexOf(")", start) - start));
-                    start = str.IndexOf("byte", start) + 6;
-                    int green = Convert.ToInt32(str.Substring(start, str.IndexOf(")", start) - start));
-                    start = str.IndexOf("byte", start) + 6;
-                    int blue = Convert.ToInt32(str.Substring(start, str.IndexOf(")", start) - start));
+                    int start = str.IndexOf("byte", StringComparison.Ordinal) + 6;
+                    int red = Convert.ToInt32(str.Substring(start, str.IndexOf(')', start) - start));
+                    start = str.IndexOf("byte", start, StringComparison.Ordinal) + 6;
+                    int green = Convert.ToInt32(str.Substring(start, str.IndexOf(')', start) - start));
+                    start = str.IndexOf("byte", start, StringComparison.Ordinal) + 6;
+                    int blue = Convert.ToInt32(str.Substring(start, str.IndexOf(')', start) - start));
                     return Color.FromArgb(red, green, blue);
                 }
                 else if (str.Split(',').Length == 4)
@@ -108,14 +108,14 @@ namespace FastReport.Import.DevExpress
         {
             if (!String.IsNullOrEmpty(str))
             {
-                if (str.IndexOf("FromArgb") > -1)
+                if (str.IndexOf("FromArgb", StringComparison.Ordinal) > -1)
                 {
-                    int start = str.IndexOf("byte") + 6;
-                    int red = Convert.ToInt32(str.Substring(start, str.IndexOf(")", start) - start));
-                    start = str.IndexOf("byte", start) + 6;
-                    int green = Convert.ToInt32(str.Substring(start, str.IndexOf(")", start) - start));
-                    start = str.IndexOf("byte", start) + 6;
-                    int blue = Convert.ToInt32(str.Substring(start, str.IndexOf(")", start) - start));
+                    int start = str.IndexOf("byte", StringComparison.Ordinal) + 6;
+                    int red = Convert.ToInt32(str.Substring(start, str.IndexOf(')', start) - start));
+                    start = str.IndexOf("byte", start, StringComparison.Ordinal) + 6;
+                    int green = Convert.ToInt32(str.Substring(start, str.IndexOf(')', start) - start));
+                    start = str.IndexOf("byte", start, StringComparison.Ordinal) + 6;
+                    int blue = Convert.ToInt32(str.Substring(start, str.IndexOf(')', start) - start));
                     return Color.FromArgb(red, green, blue);
                 }
                 else if (str.Split(',').Length == 4)
@@ -418,23 +418,23 @@ namespace FastReport.Import.DevExpress
             BorderLines borderLines = BorderLines.None;
             if (!String.IsNullOrEmpty(sides))
             {
-                if (sides.IndexOf("Left") > -1)
+                if (sides.IndexOf("Left", StringComparison.Ordinal) > -1)
                 {
                     borderLines |= BorderLines.Left;
                 }
-                if (sides.IndexOf("Top") > -1)
+                if (sides.IndexOf("Top", StringComparison.Ordinal) > -1)
                 {
                     borderLines |= BorderLines.Top;
                 }
-                if (sides.IndexOf("Right") > -1)
+                if (sides.IndexOf("Right", StringComparison.Ordinal) > -1)
                 {
                     borderLines |= BorderLines.Right;
                 }
-                if (sides.IndexOf("Bottom") > -1)
+                if (sides.IndexOf("Bottom", StringComparison.Ordinal) > -1)
                 {
                     borderLines |= BorderLines.Bottom;
                 }
-                if (sides.IndexOf("All") > -1)
+                if (sides.IndexOf("All", StringComparison.Ordinal) > -1)
                 {
                     borderLines = BorderLines.All;
                 }

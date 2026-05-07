@@ -784,6 +784,32 @@ namespace FastReport.Data
             return message;
         }
 
+        public override void CreateTable(TableDataSource source)
+        {
+            if (source.Table == null)
+            {
+                source.Table = new DataTable(source.Alias);
+                source.Table.ExtendedProperties.Add("TableName", source.TableName);
+                DataSet.Tables.Add(source.Table);
+            }
+        }
+
+        public override async Task CreateTableAsync(TableDataSource source, CancellationToken cancellationToken = default)
+        {
+            if (source.Table == null)
+            {
+                source.Table = new DataTable(source.Alias);
+                source.Table.ExtendedProperties.Add("TableName", source.TableName);
+                var dataSet = await GetDataSetAsync(cancellationToken);
+                dataSet.Tables.Add(source.Table);
+            }
+        }
+
+        protected override string GetTableName(DataTable table)
+        {
+            return table.ExtendedProperties["TableName"]?.ToString() ?? table.TableName;
+        }
+
         public PostgresDataConnection()
         {
             CanContainProcedures = true;

@@ -364,7 +364,7 @@ namespace FastReport.Utils
         public static string TryGet(string id)
         {
             string result = Get(id);
-            if (result.IndexOf(FBadResult) != -1)
+            if (result.IndexOf(FBadResult, StringComparison.Ordinal) != -1)
                 result = id;
             return result;
         }
@@ -389,7 +389,7 @@ namespace FastReport.Utils
         /// <returns><b>true</b> if specified ID exists.</returns>
         public static bool StringExists(string id)
         {
-            return Get(id).IndexOf(FBadResult) == -1;
+            return Get(id).IndexOf(FBadResult, StringComparison.Ordinal) == -1;
         }
 
         static Res()

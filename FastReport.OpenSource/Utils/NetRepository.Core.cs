@@ -20,10 +20,10 @@ namespace Editor.Syntax.Parsers.ReflectionRepository
             if (node is XmlText)
             {
                 result = node.InnerText;
-                int p = result.IndexOf(":");
+                int p = result.IndexOf(':');
                 if (p >= 0)
                     result = result.Substring(p + 1);
-                p = result.IndexOf(".#ctor");
+                p = result.IndexOf(".#ctor", StringComparison.Ordinal);
                 if (p >= 0)
                     result = result.Substring(0, p);
             }
@@ -109,7 +109,7 @@ namespace Editor.Syntax.Parsers.ReflectionRepository
                 while (node != null)
                 {
                     string name = GetNodeName(node);
-                    if (name.IndexOf(".Clear") >= 0)
+                    if (name.IndexOf(".Clear", StringComparison.Ordinal) >= 0)
                         descriptions[name] = GetNodeSummary(node);
                     else
                         descriptions[name] = GetNodeSummary(node);

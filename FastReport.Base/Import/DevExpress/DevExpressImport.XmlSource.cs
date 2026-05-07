@@ -173,9 +173,9 @@ namespace FastReport.Import.DevExpress
             string fontFamily = fontParts[0];
             float fontSize = UnitsConverter.SizeFToPixels(fontParts[1].Substring(0, fontParts[1].Length - 2));
 
-            if (fontString.IndexOf("style=") != -1)
+            if (fontString.IndexOf("style=", StringComparison.Ordinal) != -1)
             {
-                string styles = fontString.Substring(fontString.IndexOf("style=") + 6);
+                string styles = fontString.Substring(fontString.IndexOf("style=", StringComparison.Ordinal) + 6);
                 FontStyle fontStyle = FontStyle.Regular;
                 if (styles.Contains("Bold"))
                 {

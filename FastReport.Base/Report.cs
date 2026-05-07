@@ -2139,7 +2139,7 @@ namespace FastReport
                 return;
 
             byte[] buffer;
-            int startIndex = s.IndexOf("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+            int startIndex = s.IndexOf("<?xml version=\"1.0\" encoding=\"utf-8\"?>", StringComparison.Ordinal);
             if (startIndex != -1)
             {
                 buffer = Encoding.UTF8.GetBytes(s.Substring(startIndex));

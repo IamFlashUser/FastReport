@@ -759,21 +759,21 @@ namespace FastReport.Utils
                                     string src = null;
                                     string alt = " ";
                                     //currentWord = "";
-                                    int src_ind = text.IndexOf("src=\"", i + 5);
+                                    int src_ind = text.IndexOf("src=\"", i + 5, StringComparison.Ordinal);
                                     if (src_ind < right && src_ind >= 0)
                                     {
                                         src_ind += 5;
-                                        int src_end = text.IndexOf("\"", src_ind);
+                                        int src_end = text.IndexOf("\"", src_ind, StringComparison.Ordinal);
                                         if (src_end < right && src_end >= 0)
                                         {
                                             src = text.Substring(src_ind, src_end - src_ind);
                                         }
                                     }
-                                    int alt_ind = text.IndexOf("alt=\"", i + 5);
+                                    int alt_ind = text.IndexOf("alt=\"", i + 5, StringComparison.Ordinal);
                                     if (alt_ind < right && alt_ind >= 0)
                                     {
                                         alt_ind += 5;
-                                        int alt_end = text.IndexOf("\"", alt_ind);
+                                        int alt_end = text.IndexOf("\"", alt_ind, StringComparison.Ordinal);
                                         if (alt_end < right && alt_end >= 0)
                                         {
                                             alt = text.Substring(alt_ind, alt_end - alt_ind);
@@ -807,33 +807,33 @@ namespace FastReport.Utils
                                     string color = null;
                                     string face = null;
                                     string size = null;
-                                    int color_ind = text.IndexOf("color=\"", i + 5);
+                                    int color_ind = text.IndexOf("color=\"", i + 5, StringComparison.Ordinal);
                                     if (color_ind < right && color_ind >= 0)
                                     {
                                         color_ind += 7;
-                                        int color_end = text.IndexOf("\"", color_ind);
+                                        int color_end = text.IndexOf("\"", color_ind, StringComparison.Ordinal);
                                         if (color_end < right && color_end >= 0)
                                         {
                                             color = text.Substring(color_ind, color_end - color_ind);
                                         }
                                     }
 
-                                    int face_ind = text.IndexOf("face=\"", i + 5);
+                                    int face_ind = text.IndexOf("face=\"", i + 5, StringComparison.Ordinal);
                                     if (face_ind < right && face_ind >= 0)
                                     {
                                         face_ind += 6;
-                                        int face_end = text.IndexOf("\"", face_ind);
+                                        int face_end = text.IndexOf("\"", face_ind, StringComparison.Ordinal);
                                         if (face_end < right && face_end >= 0)
                                         {
                                             face = text.Substring(face_ind, face_end - face_ind);
                                         }
                                     }
 
-                                    int size_ind = text.IndexOf("size=\"", i + 5);
+                                    int size_ind = text.IndexOf("size=\"", i + 5, StringComparison.Ordinal);
                                     if (size_ind < right && size_ind >= 0)
                                     {
                                         size_ind += 6;
-                                        int size_end = text.IndexOf("\"", size_ind);
+                                        int size_end = text.IndexOf("\"", size_ind, StringComparison.Ordinal);
                                         if (size_end < right && size_end >= 0)
                                         {
                                             size = text.Substring(size_ind, size_end - size_ind);
@@ -2236,7 +2236,7 @@ namespace FastReport.Utils
                         {
                             if (src.StartsWith("data:"))
                             {
-                                item.Set(src.Substring(src.IndexOf("base64,") + "base64,".Length));
+                                item.Set(src.Substring(src.IndexOf("base64,", StringComparison.Ordinal) + "base64,".Length));
                             }
                             else
                                 item.Set(Client.DownloadData(src));
@@ -2290,7 +2290,7 @@ namespace FastReport.Utils
                 return true;
             if (src.StartsWith("https://"))
                 return true;
-            if (src.StartsWith("data:") && src.IndexOf("base64,") > 0)
+            if (src.StartsWith("data:") && src.IndexOf("base64,", StringComparison.Ordinal) > 0)
                 return true;
             return false;
         }

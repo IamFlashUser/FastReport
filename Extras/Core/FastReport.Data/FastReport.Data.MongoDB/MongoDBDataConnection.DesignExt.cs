@@ -5,6 +5,7 @@ using MongoDB.Driver;
 using FastReport.Data.ConnectionEditors;
 using System.Data;
 using MongoDB.Bson;
+using System.Threading;
 
 namespace FastReport.Data
 {
@@ -37,10 +38,15 @@ namespace FastReport.Data
 		
 		/// <inheritdoc/>
         public override void TestConnection()
-        {           
+        {
             MongoClient client = new MongoClient(ConnectionString);
+#if NET462
             var databases = client.ListDatabases();//.GetDatabase(dbName);
             var doc = databases.First();
+#else
+            var databases = client.ListDatabases(CancellationToken.None);
+            var doc = databases.First();
+#endif
         }
     }
 }
